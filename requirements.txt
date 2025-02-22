@@ -1,6 +1,5 @@
 streamlit
 elevenlabs
-json
 os
 imageio[ffmpeg]
 pydub
@@ -19,3 +18,12 @@ langchain_groq
 langchain_community
 requests
 random
+fpdf
+pillow
+langchain_core
+pypdf
+PyYAML
+SQLAlchemy
+aiohttp
+dataclasses-json
+jsonpatch
