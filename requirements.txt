@@ -2,7 +2,6 @@ streamlit
 elevenlabs
 json
 os
-elevenlabs
 imageio[ffmpeg]
 pydub
 moviepy
@@ -16,15 +15,7 @@ PyPDF2
 chromadb
 faiss-cpu
 langchain_google_genai
-streamlit
-os
-json
-random
-requests
-langchain
 langchain_groq
 langchain_community
-langchain_google_genai
-elevenlabs
-moviepy
-faiss-cpu
+requests
+random
