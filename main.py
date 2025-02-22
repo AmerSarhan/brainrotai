@@ -17,7 +17,7 @@ from moviepy import VideoFileClip, AudioFileClip, CompositeAudioClip
 groq_api_keys = list(st.secrets["GROQ_API_KEY"].values())
 selected_groq_api_key = random.choice(groq_api_keys)
 
-eos.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 
 elevenlabs_api_keys = list(st.secrets["ELEVENLABS_API_KEY"].values())
 if not elevenlabs_api_keys:
