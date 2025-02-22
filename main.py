@@ -165,3 +165,36 @@ if uploaded_file is not None:
                 st.download_button("Download Final Video", f, file_name="final_video.mp4")
         except Exception as e:
             st.error(f"Error: {e}")
+
+
+
+
+footer="""<style>
+a:link , a:visited{
+color: blue;
+background-color: transparent;
+text-decoration: underline;
+}
+
+a:hover,  a:active {
+color: red;
+background-color: transparent;
+text-decoration: underline;
+}
+
+.footer {
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+background-color: black;
+color: white;
+text-align: center;
+}
+</style>
+<div class="footer">
+<p>Made with ❤️ by Daksh Arora</p>
+</div>
+"""
+
+st.markdown(footer,unsafe_allow_html=True)
