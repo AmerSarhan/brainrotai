@@ -124,14 +124,6 @@ Common issues and solutions:
 
 Feel free to submit issues, fork the repository, and create pull requests for any improvements.
 
-## 📄 License
-
-[Add your license information here]
-
-## 👥 Authors
-
-[Add author information here]
-
 ## 🙏 Acknowledgments
 
 - Groq for LLM API
