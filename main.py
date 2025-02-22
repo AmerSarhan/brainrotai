@@ -43,6 +43,17 @@ try:
 except Exception as e:
     st.error(f"Error downloading video: {e}")
     st.stop()
+st.markdown(
+    """
+    <style>
+        .stApp {
+            background-color: black !important;
+            color: white;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Set custom page title and icon
 st.set_page_config(page_title="BrainrotAI - Meme-Powered Summarization", page_icon="🧠")
