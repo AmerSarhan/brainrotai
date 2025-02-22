@@ -153,7 +153,8 @@ if uploaded_file is not None:
             st.success("Video processed successfully!")
 
             # Add CSS to make video smaller
-           st.markdown("""
+           # Add CSS to make video smaller
+            st.markdown("""
                 <style>
                     video {
                         width: 50% !important;  /* Adjust width */
@@ -161,6 +162,9 @@ if uploaded_file is not None:
                     }
                 </style>
             """, unsafe_allow_html=True)
+
+            st.video(final_video_path)
+
 
 
 
