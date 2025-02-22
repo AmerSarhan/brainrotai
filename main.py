@@ -47,23 +47,6 @@ except Exception as e:
 # Set custom page title and icon
 st.set_page_config(page_title="BrainrotAI - Meme-Powered Summarization", page_icon="🧠")
 
-import streamlit as st
-
-st.markdown(
-    """
-    <style>
-        /* Background color */
-        .stApp {
-            background-color: #0e1117;
-        }
-        /* Text color */
-        .stMarkdown, .stTextInput, .stButton {
-            color: white;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 
 st.title("🧠 BrainrotAI")
