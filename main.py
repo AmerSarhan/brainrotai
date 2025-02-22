@@ -45,7 +45,7 @@ except Exception as e:
     st.stop()
 
 # Set custom page title and icon
-st.set_page_config(page_title="BrainrotAI - Meme-Powered Summarization", page_icon="🧠")
+st.set_page_config(page_title="BrainrotAI - Meme-Powered Summarization", page_icon="🧠", theme="dark")
 
 st.title("🧠 BrainrotAI")
 
