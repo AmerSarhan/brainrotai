@@ -169,7 +169,7 @@ if uploaded_file is not None:
 
 
 
-            st.video(final_video_path)
+            #st.video(final_video_path)
 
             with open(final_video_path, "rb") as f:
                 st.download_button("Download Final Video", f, file_name="final_video.mp4")
