@@ -42,46 +42,48 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* Hide main elements */
-        #MainMenu {visibility: hidden;}
+        #MainMenu {visibility: hidden !important;}
         footer {visibility: hidden !important;}
-        header {visibility: hidden;}
-        .stDeployButton {display: none;}
+        header {visibility: hidden !important;}
+        .stDeployButton {display: none !important;}
         
         /* Hide sidebar and toolbar */
-        section[data-testid="stSidebar"] {display: none;}
-        div[data-testid="stToolbar"] {display: none;}
-        div[data-testid="stDecoration"] {display: none;}
-        div[data-testid="stStatusWidget"] {display: none;}
+        section[data-testid="stSidebar"] {display: none !important;}
+        div[data-testid="stToolbar"],
+        div[data-testid="stDecoration"],
+        div[data-testid="stStatusWidget"],
+        div[data-testid="stWidgetLabel"] {display: none !important;}
         
-        /* Hide various Streamlit CSS classes */
-        .css-1rs6os {visibility: hidden;}
-        .css-17ziqus {visibility: hidden;}
-        .css-14xtw13 e8zbici0 {visibility: hidden;}
-        
-        /* Hide viewer badge and footer elements */
-        .viewerBadge_container__1QSob {display: none !important;}
-        .styles_viewerBadge__1yB5_ {display: none !important;}
-        .viewerBadge_link__1S137 {display: none !important;}
+        /* Hide Streamlit branding */
+        .viewerBadge_container__1QSob,
+        .styles_viewerBadge__1yB5_,
+        .viewerBadge_link__1S137,
         .viewerBadge_text__1JaDK {display: none !important;}
         
-        /* Aggressive footer hiding */
-        footer:after {content: none !important;}
+        /* Hide all footer elements */
+        footer:after,
         footer:before {content: none !important;}
-        .stApp footer {display: none !important;}
-        footer a {display: none !important;}
-        .streamlit-footer {display: none !important;}
+        .stApp footer,
+        footer a,
+        .streamlit-footer,
         .streamlit-footer-item {display: none !important;}
         
-        /* Hide any potential iframe footers */
+        /* Hide iframe and other elements */
         iframe[title="Streamlit"] {display: none !important;}
-        
-        /* Additional Streamlit elements */
         .stMarkdown {position: relative;}
         .stMarkdown::after {content: none !important;}
-        div[data-testid="stToolbar"] {display: none;}
-        div[data-testid="stDecoration"] {display: none;}
-        div[data-testid="stStatusWidget"] {display: none;}
-        #root > div:nth-child(1) > div > div > div > div > section.css-1lcbmhc.e1fqkh3o0 > div.css-1adrfps.e1fqkh3o3 {display: none;}
+        
+        /* Hide misc Streamlit classes */
+        .css-1rs6os,
+        .css-17ziqus,
+        .css-14xtw13,
+        .e8zbici0 {visibility: hidden !important;}
+        
+        /* Remove any remaining Streamlit elements */
+        [data-testid*="stStreamlit"] {display: none !important;}
+        [class*="streamlit"] {display: none !important;}
+        /* Hide specific Streamlit sections */
+        #root > div:nth-child(1) > div > div > div > div > section.css-1lcbmhc.e1fqkh3o0 > div.css-1adrfps.e1fqkh3o3 {display: none !important;}
     </style>
 """, unsafe_allow_html=True)
 
