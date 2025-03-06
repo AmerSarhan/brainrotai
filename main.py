@@ -41,21 +41,43 @@ st.set_page_config(
 # Hide ALL Streamlit elements
 st.markdown("""
     <style>
+        /* Hide main elements */
         #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
+        footer {visibility: hidden !important;}
         header {visibility: hidden;}
         .stDeployButton {display: none;}
+        
+        /* Hide sidebar and toolbar */
+        section[data-testid="stSidebar"] {display: none;}
+        div[data-testid="stToolbar"] {display: none;}
+        div[data-testid="stDecoration"] {display: none;}
+        div[data-testid="stStatusWidget"] {display: none;}
+        
+        /* Hide various Streamlit CSS classes */
         .css-1rs6os {visibility: hidden;}
         .css-17ziqus {visibility: hidden;}
         .css-14xtw13 e8zbici0 {visibility: hidden;}
-        section[data-testid="stSidebar"] {display: none;}
-        .viewerBadge_container__1QSob {display: none;}
-        .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137, .viewerBadge_text__1JaDK {display: none;}
-        footer:after {display: none !important;}
+        
+        /* Hide viewer badge and footer elements */
+        .viewerBadge_container__1QSob {display: none !important;}
+        .styles_viewerBadge__1yB5_ {display: none !important;}
+        .viewerBadge_link__1S137 {display: none !important;}
+        .viewerBadge_text__1JaDK {display: none !important;}
+        
+        /* Aggressive footer hiding */
+        footer:after {content: none !important;}
+        footer:before {content: none !important;}
         .stApp footer {display: none !important;}
         footer a {display: none !important;}
         .streamlit-footer {display: none !important;}
         .streamlit-footer-item {display: none !important;}
+        
+        /* Hide any potential iframe footers */
+        iframe[title="Streamlit"] {display: none !important;}
+        
+        /* Additional Streamlit elements */
+        .stMarkdown {position: relative;}
+        .stMarkdown::after {content: none !important;}
         div[data-testid="stToolbar"] {display: none;}
         div[data-testid="stDecoration"] {display: none;}
         div[data-testid="stStatusWidget"] {display: none;}
