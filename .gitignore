@@ -1,0 +1,9 @@
+.env
+*.pyc
+__pycache__/
+.DS_Store
+.streamlit/secrets.toml
+.venv/
+input_video.mp4
+output_audio.mp3
+final_video.mp4

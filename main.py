@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import random
 import requests
-from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
@@ -14,10 +14,9 @@ from elevenlabs.client import ElevenLabs
 from moviepy import VideoFileClip, AudioFileClip, CompositeAudioClip
 
 # Load API keys from Streamlit secrets
-groq_api_keys = list(st.secrets["GROQ_API_KEY"].values())
-selected_groq_api_key = random.choice(groq_api_keys)
-
-os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+google_api_keys = list(st.secrets["GOOGLE_API_KEY"].values())
+google_api_key = google_api_keys[0]
+os.environ["GOOGLE_API_KEY"] = google_api_key
 
 elevenlabs_api_keys = list(st.secrets["ELEVENLABS_API_KEY"].values())
 if not elevenlabs_api_keys:
@@ -30,35 +29,53 @@ drive_video_id = "1ncTcikpiBRvM1vVrBKY3vYpyQDqhlhkW"
 video_url = f"https://drive.google.com/uc?export=download&id={drive_video_id}"
 video_path = "input_video.mp4"
 
-# Download the video
-try:
-    response = requests.get(video_url, stream=True)
-    if response.status_code == 200:
-        with open(video_path, "wb") as f:
-            for chunk in response.iter_content(chunk_size=1024):
-                f.write(chunk)
-    else:
-        st.error("Failed to download video from Google Drive.")
-        st.stop()
-except Exception as e:
-    st.error(f"Error downloading video: {e}")
-    st.stop()
-
 
 # Set custom page title and icon
-st.set_page_config(page_title="BrainrotAI - Meme-Powered Summarization", page_icon="🧠")
+st.set_page_config(
+    page_title="BRAINROT AI",
+    page_icon="🧠",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
+# Hide Streamlit elements
+st.markdown("""
+    <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .stDeployButton {display: none;}
+        .css-1rs6os {visibility: hidden;}
+        .css-17ziqus {visibility: hidden;}
+        .css-14xtw13 e8zbici0 {visibility: hidden;}
+        section[data-testid="stSidebar"] {display: none;}
+        div[data-testid="stToolbar"] {display: none;}
+        div[data-testid="stDecoration"] {display: none;}
+        div[data-testid="stStatusWidget"] {display: none;}
+        #root > div:nth-child(1) > div > div > div > div > section.css-1lcbmhc.e1fqkh3o0 > div.css-1adrfps.e1fqkh3o3 {display: none;}
+    </style>
+""", unsafe_allow_html=True)
 
-
-st.title("🧠 BrainrotAI")
+# Main content container
+st.markdown("""
+    <div style='text-align: center; padding: 2rem 0;'>
+        <h1 style='font-size: 3.5em; margin-bottom: 0.5rem;'>🧠 BRAINROT AI</h1>
+        <h3 style='font-size: 1.5em; color: #ff6b6b; margin-bottom: 2rem;'>Transform boring PDFs into viral-worthy video content! 🔥</h3>
+        <div style='max-width: 800px; margin: 0 auto; padding: 2rem; background: rgba(255, 255, 255, 0.05); border-radius: 15px;'>
+            <blockquote style='border-left: 4px solid #ff6b6b; padding-left: 1rem; margin: 1rem 0;'>
+                <p style='font-style: italic; font-size: 1.2em;'>"Where AI meets chaos, and boring PDFs become internet gold!" 🚀</p>
+            </blockquote>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 # Define Model A
-model_a = "gemma2-9b-it"
+model_a = "models/gemini-1.5-pro-latest"
 
 def get_model_a():
     return model_a
 
-llm_a = ChatGroq(groq_api_key=selected_groq_api_key, model_name=get_model_a())
+llm_a = ChatGoogleGenerativeAI(model=get_model_a(), temperature=0.7)
 
 prompt = ChatPromptTemplate.from_template(
     """
@@ -112,99 +129,233 @@ def process_uploaded_pdf(uploaded_file):
     response = retrieval_chain.invoke({'input': "all", 'context': context})
     return response['answer']
 
-uploaded_file = st.file_uploader("📂 Upload a PDF Document", type=["pdf"])
+col1, col2, col3 = st.columns([1,2,1])
+with col2:
+    st.markdown("""
+        <div style='background: rgba(255, 255, 255, 0.05); padding: 2rem; border-radius: 15px; text-align: center; margin: 2rem 0;'>
+            <h4 style='margin-bottom: 1rem; color: #ff6b6b;'>📂 Upload Your PDF</h4>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    uploaded_file = st.file_uploader("", type=["pdf"])
+    
+    if uploaded_file is not None:
+        with st.spinner('🤖 Analyzing your PDF with maximum chaos...'):
+            brainrot_text = process_uploaded_pdf(uploaded_file)
+        
+        st.markdown("""
+            <div style='text-align: center; margin: 2rem 0;'>
+                <p style='color: #ff6b6b; font-size: 1.2em;'>🎉 PDF processed! Ready to create your viral video?</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("🎥 Generate Video with Audio", key="generate_video"):
+            try:
+                # Create a big bold header for the process
+                st.markdown("""
+                    <div style='padding: 2rem; background: linear-gradient(45deg, rgba(255, 107, 107, 0.2), rgba(255, 142, 83, 0.2)); 
+                              border-radius: 15px; margin: 2rem 0; text-align: center; 
+                              border: 2px solid rgba(255, 107, 107, 0.3);'>
+                        <h2 style='margin: 0; background: linear-gradient(45deg, #ff6b6b, #ff8e53); 
+                                   -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+                                   font-size: 2em;'>🎥 Creating Your Viral Video</h2>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                # Create containers for progress
+                progress_container = st.container()
+                with progress_container:
+                    st.markdown("""
+                        <style>
+                            .stProgress > div > div {
+                                height: 20px !important;
+                                background: linear-gradient(45deg, #ff6b6b, #ff8e53) !important;
+                            }
+                            .stProgress > div {
+                                background-color: rgba(255, 255, 255, 0.1) !important;
+                            }
+                        </style>
+                    """, unsafe_allow_html=True)
+                    progress_bar = st.progress(0)
+                    status = st.empty()
+                
+                # Download the video if needed
+                if not os.path.exists(video_path):
+                    status.markdown("""
+                        <div style='padding: 1rem; background: rgba(255, 255, 255, 0.05); 
+                                  border-radius: 10px; border-left: 4px solid #ff6b6b;'>
+                            <p style='margin: 0; color: #ff6b6b; font-size: 1.1em;'>💾 Downloading background video...</p>
+                        </div>
+                    """, unsafe_allow_html=True)
+                    progress_bar.progress(10)
+                    try:
+                        response = requests.get(video_url, stream=True)
+                        if response.status_code == 200:
+                            with open(video_path, "wb") as f:
+                                for chunk in response.iter_content(chunk_size=1024):
+                                    f.write(chunk)
+                            progress_bar.progress(30)
+                        else:
+                            st.error("Failed to download video from Google Drive.")
+                            st.stop()
+                    except Exception as e:
+                        st.error(f"Error downloading video: {e}")
+                        st.stop()
+                
+                # Generate audio
+                status.markdown("""
+                    <div style='padding: 1rem; background: rgba(255, 255, 255, 0.05); 
+                              border-radius: 10px; border-left: 4px solid #ff6b6b;'>
+                        <p style='margin: 0; color: #ff6b6b; font-size: 1.1em;'>🎙️ Converting text to speech...</p>
+                    </div>
+                """, unsafe_allow_html=True)
+                progress_bar.progress(40)
+                
+                # Initialize ElevenLabs Client
+                client = ElevenLabs(api_key=selected_elevenlabs_api_key)
+                
+                # Convert brainrot text to speech
+                audio_generator = client.text_to_speech.convert(
+                    text=brainrot_text,
+                    voice_id="pNInz6obpgDQGcFmaJgB",
+                    model_id="eleven_multilingual_v2",
+                    output_format="mp3_44100_128",
+                )
+                
+                # Save the audio file
+                audio_path = "output_audio.mp3"
+                with open(audio_path, "wb") as f:
+                    f.write(b"".join(audio_generator))
+                
+                progress_bar.progress(60)
 
-if uploaded_file is not None:
-    brainrot_text = process_uploaded_pdf(uploaded_file)
+                # Process video
+                status.markdown("""
+                    <div style='padding: 1rem; background: rgba(255, 255, 255, 0.05); 
+                              border-radius: 10px; border-left: 4px solid #ff6b6b;'>
+                        <p style='margin: 0; color: #ff6b6b; font-size: 1.1em;'>🎥 Mixing video and audio...</p>
+                    </div>
+                """, unsafe_allow_html=True)
+                progress_bar.progress(70)
+                
+                # Load video and audio
+                video_clip = VideoFileClip(video_path)
+                audio_clip = AudioFileClip(audio_path)
 
-    if st.button("Generate Video with Audio"):
-        try:
-            # Initialize ElevenLabs Client
-            client = ElevenLabs(api_key=selected_elevenlabs_api_key)
-            
-            # Convert brainrot text to speech
-            audio_generator = client.text_to_speech.convert(
-                text=brainrot_text,
-                voice_id="pNInz6obpgDQGcFmaJgB",
-                model_id="eleven_multilingual_v2",
-                output_format="mp3_44100_128",
-            )
-            
-            # Save the audio file
-            audio_path = "output_audio.mp3"
-            with open(audio_path, "wb") as f:
-                f.write(b"".join(audio_generator))
+                # Trim the video to match the audio duration
+                trimmed_video = video_clip.subclipped(0, min(video_clip.duration, audio_clip.duration))
+                
+                # Set the trimmed video's audio
+                final_audio = CompositeAudioClip([audio_clip])
+                final_video = trimmed_video.with_audio(final_audio)
+                
+                # Save the final video
+                final_video_path = "final_video.mp4"
+                final_video.write_videofile(final_video_path, codec="libx264", audio_codec="aac")
+                
+                # Show completion
+                progress_bar.progress(100)
+                status.markdown("""
+                    <div style='padding: 1rem; background: rgba(39, 174, 96, 0.1); 
+                              border-radius: 10px; border-left: 4px solid #27ae60;'>
+                        <p style='margin: 0; color: #27ae60; font-size: 1.2em; font-weight: bold;'>🎉 Video created successfully!</p>
+                    </div>
+                """, unsafe_allow_html=True)
 
-            # Load video and audio
-            video_clip = VideoFileClip(video_path)
-            audio_clip = AudioFileClip(audio_path)
+                # Add CSS to make video smaller
+                st.markdown("""
+                    <style>
+                        video {
+                            width: 50% !important;  /* Adjust width */
+                            height: auto !important;
+                        }
+                    </style>
+                """, unsafe_allow_html=True)
 
-            # Trim the video to match the audio duration
-            trimmed_video = video_clip.subclipped(0, min(video_clip.duration, audio_clip.duration))
-            
-            # Set the trimmed video's audio
-            final_audio = CompositeAudioClip([audio_clip])
-            final_video = trimmed_video.with_audio(final_audio)
-            
-            # Save the final video
-            final_video_path = "final_video.mp4"
-            final_video.write_videofile(final_video_path, codec="libx264", audio_codec="aac")
-            
-            st.success("Video processed successfully!")
+                st.video(final_video_path)
 
-            # Add CSS to make video smaller
-           # Add CSS to make video smaller
-            st.markdown("""
-                <style>
-                    video {
-                        width: 50% !important;  /* Adjust width */
-                        height: auto !important;
-                    }
-                </style>
-            """, unsafe_allow_html=True)
-
-            st.video(final_video_path)
-
+                with open(final_video_path, "rb") as f:
+                    st.download_button("Download Final Video", f, file_name="final_video.mp4")
+            except Exception as e:
+                st.error(f"Error: {e}")
 
 
 
 
-            #st.video(final_video_path)
-
-            with open(final_video_path, "rb") as f:
-                st.download_button("Download Final Video", f, file_name="final_video.mp4")
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-
-
-
-footer="""<style>
-a:link , a:visited{
-color: blue;
-background-color: transparent;
-text-decoration: underline;
-}
-
-a:hover,  a:active {
-color: red;
-background-color: transparent;
-text-decoration: underline;
-}
-
-.footer {
-position: fixed;
-left: 0;
-bottom: 0;
-width: 100%;
-background-color: black;
-color: white;
-text-align: center;
-}
+st.markdown("""
+<style>
+    /* Main app styling */
+    .stApp {
+        background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+        color: white;
+    }
+    
+    /* Button styling */
+    .stButton>button {
+        background: linear-gradient(45deg, #ff6b6b, #ff8e53) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: bold !important;
+        padding: 1rem 3rem !important;
+        border-radius: 25px !important;
+        transition: all 0.3s ease !important;
+        font-size: 1.1em !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        margin: 1rem 0 !important;
+    }
+    
+    .stButton>button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4) !important;
+    }
+    
+    /* File uploader styling */
+    .uploadedFile {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 15px !important;
+        padding: 2rem !important;
+        border: 2px dashed rgba(255, 107, 107, 0.4) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .uploadedFile:hover {
+        border-color: #ff6b6b !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+    
+    /* Progress and spinner styling */
+    .stProgress > div > div {
+        background-color: #ff6b6b !important;
+    }
+    
+    .stSpinner > div {
+        border-top-color: #ff6b6b !important;
+    }
+    
+    /* Text styling */
+    .stMarkdown p {
+        color: #f8f9fa !important;
+        line-height: 1.6 !important;
+    }
+    
+    .stMarkdown blockquote {
+        border-left: 4px solid #ff6b6b !important;
+        background: rgba(255, 107, 107, 0.1) !important;
+        padding: 1.5rem !important;
+        border-radius: 10px !important;
+        margin: 2rem 0 !important;
+    }
+    
+    /* Video player styling */
+    video {
+        border-radius: 15px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Download button styling */
+    .stDownloadButton>button {
+        background: linear-gradient(45deg, #4CAF50, #45a049) !important;
+    }
 </style>
-<div class="footer">
-<p>Made with ❤️ by Daksh Arora</p>
-</div>
-"""
-
-st.markdown(footer,unsafe_allow_html=True)
+""", unsafe_allow_html=True)
